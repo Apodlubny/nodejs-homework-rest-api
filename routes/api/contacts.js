@@ -7,30 +7,30 @@ const ctrl = require("../../controllers/contacts");
 const { ctrlWrapper } = require("../../helpers");
 
 // validate request body and ID
-const { validateBody, isValidId } = require("../../middlewares");
+const { auth, validateBody, isValidId } = require("../../middlewares");
 
 // Joi validate Schema
-const { joiSchema } = require("../../models/contact");
+const { joiContactSchema } = require("../../models/contact");
 
 const router = express.Router();
 
-router.get("/", ctrlWrapper(ctrl.getAll));
+router.get("/", auth, ctrlWrapper(ctrl.getAll));
 
-router.get("/:contactId", isValidId, ctrlWrapper(ctrl.getById));
+router.get("/:contactId", auth, isValidId, ctrlWrapper(ctrl.getById));
 
-router.post("/", validateBody(joiSchema.addSchema), ctrlWrapper(ctrl.add));
+router.post("/", auth, validateBody(joiContactSchema.addSchema), ctrlWrapper(ctrl.add));
 
 router.put(
   "/:contactId",
   isValidId,
-  validateBody(joiSchema.addSchema),
+  validateBody(joiContactSchema.addSchema),
   ctrlWrapper(ctrl.updateById)
 );
 
 router.patch(
   "/:contactId/favorite",
   isValidId,
-  validateBody(joiSchema.updateFavoriteSchema),
+  validateBody(joiContactSchema.updateFavoriteSchema),
   ctrlWrapper(ctrl.updateStatusContact)
 );
 
