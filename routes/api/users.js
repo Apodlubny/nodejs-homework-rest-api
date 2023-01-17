@@ -1,40 +1,48 @@
-const express = require('express');
-const ctrl = require('../../controllers/user');
-const { auth, upload } = require('../../middlewares');
+const express = require("express");
+const ctrl = require("../../controllers/user");
+const { auth, upload } = require("../../middlewares");
 
 const router = express.Router();
 
-const { ctrlWrapper } = require('../../helpers');
-const { validateBody } = require('../../middlewares');
-const { joiUserSchema } = require('../../models/user');
+const { ctrlWrapper } = require("../../helpers");
+const { validateBody } = require("../../middlewares");
+const { joiUserSchema } = require("../../models/user");
 
 router.post(
-  '/signup',
+  "/signup",
   validateBody(joiUserSchema.registerSchema),
   ctrlWrapper(ctrl.register)
 );
 
+router.get("/verify/:verificationToken", ctrlWrapper(ctrl.verifyEmail));
+
 router.post(
-  '/login',
+  "/verify",
+  validateBody(joiUserSchema.verifyEmailSchema),
+  ctrlWrapper(ctrl.resendVerifyEmail)
+);
+
+router.post(
+  "/login",
   validateBody(joiUserSchema.loginSchema),
   ctrlWrapper(ctrl.login)
 );
 
-router.get('/logout', auth, ctrlWrapper(ctrl.logout));
+router.get("/logout", auth, ctrlWrapper(ctrl.logout));
 
-router.get('/current', auth, ctrlWrapper(ctrl.getCurrent));
+router.get("/current", auth, ctrlWrapper(ctrl.getCurrent));
 
 router.patch(
-  '/',
+  "/",
   auth,
   validateBody(joiUserSchema.updateSubscription),
   ctrlWrapper(ctrl.updateSubscription)
 );
 
 router.patch(
-  '/avatars',
+  "/avatars",
   auth,
-  upload.single('avatar'),
+  upload.single("avatar"),
   ctrlWrapper(ctrl.updateAvatar)
 );
 
